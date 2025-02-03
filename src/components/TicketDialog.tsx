@@ -1,5 +1,5 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { X, AlertCircle, Clock, BellOff, User } from "lucide-react";
+import { X, AlertCircle, Clock, BellOff } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { useState } from "react";
@@ -125,126 +125,127 @@ const TicketDialog = ({ isOpen, onClose }: TicketDialogProps) => {
               </div>
             </div>
 
-          <div>
-            <h3 className="text-sm font-medium mb-2">Status</h3>
-            {!isMuted ? (
-              <Select.Root value={status} onValueChange={(value: Status) => setStatus(value)}>
-                <Select.Trigger className="inline-flex items-center justify-between whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 w-[200px]">
-                  <Select.Value>{status}</Select.Value>
-                </Select.Trigger>
-                <Select.Portal>
-                  <Select.Content className="bg-white rounded-md shadow-lg border">
-                    <Select.Viewport className="p-1">
-                      {statusOptions.map((option) => (
-                        <Select.Item
-                          key={option}
-                          value={option}
-                          className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent focus:bg-accent"
-                        >
-                          <Select.ItemText>{option}</Select.ItemText>
-                        </Select.Item>
-                      ))}
-                    </Select.Viewport>
-                  </Select.Content>
-                </Select.Portal>
-              </Select.Root>
-            ) : (
-              <div className="text-sm text-muted-foreground">{status}</div>
-            )}
-          </div>
-
-          <div>
-            <h3 className="text-sm font-medium mb-2">Assignee</h3>
-            {!isMuted ? (
-              <Select.Root
-                value={assignee?.id}
-                onValueChange={(value) => {
-                  const newAssignee = assigneeOptions.find((a) => a.id === value);
-                  setAssignee(newAssignee || null);
-                }}
-              >
-                <Select.Trigger className="inline-flex items-center justify-between whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 w-[200px]">
-                  <div className="flex items-center gap-2">
-                    {assignee && (
-                      <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
-                        <span className="text-xs text-blue-700 font-medium">
-                          {assignee.initials}
-                        </span>
-                      </div>
-                    )}
-                    <Select.Value>{assignee?.name || 'Unassigned'}</Select.Value>
-                  </div>
-                </Select.Trigger>
-                <Select.Portal>
-                  <Select.Content className="bg-white rounded-md shadow-lg border">
-                    <Select.Viewport className="p-1">
-                      {assigneeOptions.map((option) => (
-                        <Select.Item
-                          key={option.id}
-                          value={option.id}
-                          className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent focus:bg-accent"
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
-                              <span className="text-xs text-blue-700 font-medium">
-                                {option.initials}
-                              </span>
-                            </div>
-                            <Select.ItemText>{option.name}</Select.ItemText>
-                          </div>
-                        </Select.Item>
-                      ))}
-                    </Select.Viewport>
-                  </Select.Content>
-                </Select.Portal>
-              </Select.Root>
-            ) : (
-              <div className="text-sm text-muted-foreground">Unassigned (Muted)</div>
-            )}
-          </div>
-
-          <div className="border-t pt-4">
-            {!isMuted ? (
-              <div className="flex items-center gap-2">
-                <Select.Root onValueChange={handleMute}>
-                  <Select.Trigger className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
-                    <Select.Value placeholder="Mute for..." />
+            <div>
+              <h3 className="text-sm font-medium mb-2">Status</h3>
+              {!isMuted ? (
+                <Select.Root value={status} onValueChange={(value: Status) => setStatus(value)}>
+                  <Select.Trigger className="inline-flex items-center justify-between whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 w-[200px]">
+                    <Select.Value>{status}</Select.Value>
                   </Select.Trigger>
                   <Select.Portal>
                     <Select.Content className="bg-white rounded-md shadow-lg border">
                       <Select.Viewport className="p-1">
-                        <Select.Item value="1" className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent focus:bg-accent">
-                          <Select.ItemText>1 hour</Select.ItemText>
-                        </Select.Item>
-                        <Select.Item value="4" className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent focus:bg-accent">
-                          <Select.ItemText>4 hours</Select.ItemText>
-                        </Select.Item>
-                        <Select.Item value="24" className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent focus:bg-accent">
-                          <Select.ItemText>24 hours</Select.ItemText>
-                        </Select.Item>
+                        {statusOptions.map((option) => (
+                          <Select.Item
+                            key={option}
+                            value={option}
+                            className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent focus:bg-accent"
+                          >
+                            <Select.ItemText>{option}</Select.ItemText>
+                          </Select.Item>
+                        ))}
                       </Select.Viewport>
                     </Select.Content>
                   </Select.Portal>
                 </Select.Root>
-              </div>
-            ) : (
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <BellOff className="h-4 w-4" />
-                  <span>
-                    Muted until {muteEndTime?.toLocaleString()}
-                  </span>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleUnmute}
-                  className="text-sm"
+              ) : (
+                <div className="text-sm text-muted-foreground">{status}</div>
+              )}
+            </div>
+
+            <div>
+              <h3 className="text-sm font-medium mb-2">Assignee</h3>
+              {!isMuted ? (
+                <Select.Root
+                  value={assignee?.id}
+                  onValueChange={(value) => {
+                    const newAssignee = assigneeOptions.find((a) => a.id === value);
+                    setAssignee(newAssignee || null);
+                  }}
                 >
-                  Unmute
-                </Button>
-              </div>
-            )}
+                  <Select.Trigger className="inline-flex items-center justify-between whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 w-[200px]">
+                    <div className="flex items-center gap-2">
+                      {assignee && (
+                        <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
+                          <span className="text-xs text-blue-700 font-medium">
+                            {assignee.initials}
+                          </span>
+                        </div>
+                      )}
+                      <Select.Value>{assignee?.name || 'Unassigned'}</Select.Value>
+                    </div>
+                  </Select.Trigger>
+                  <Select.Portal>
+                    <Select.Content className="bg-white rounded-md shadow-lg border">
+                      <Select.Viewport className="p-1">
+                        {assigneeOptions.map((option) => (
+                          <Select.Item
+                            key={option.id}
+                            value={option.id}
+                            className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent focus:bg-accent"
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
+                                <span className="text-xs text-blue-700 font-medium">
+                                  {option.initials}
+                                </span>
+                              </div>
+                              <Select.ItemText>{option.name}</Select.ItemText>
+                            </div>
+                          </Select.Item>
+                        ))}
+                      </Select.Viewport>
+                    </Select.Content>
+                  </Select.Portal>
+                </Select.Root>
+              ) : (
+                <div className="text-sm text-muted-foreground">Unassigned (Muted)</div>
+              )}
+            </div>
+
+            <div className="border-t pt-4">
+              {!isMuted ? (
+                <div className="flex items-center gap-2">
+                  <Select.Root onValueChange={handleMute}>
+                    <Select.Trigger className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+                      <Select.Value placeholder="Mute for..." />
+                    </Select.Trigger>
+                    <Select.Portal>
+                      <Select.Content className="bg-white rounded-md shadow-lg border">
+                        <Select.Viewport className="p-1">
+                          <Select.Item value="1" className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent focus:bg-accent">
+                            <Select.ItemText>1 hour</Select.ItemText>
+                          </Select.Item>
+                          <Select.Item value="4" className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent focus:bg-accent">
+                            <Select.ItemText>4 hours</Select.ItemText>
+                          </Select.Item>
+                          <Select.Item value="24" className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent focus:bg-accent">
+                            <Select.ItemText>24 hours</Select.ItemText>
+                          </Select.Item>
+                        </Select.Viewport>
+                      </Select.Content>
+                    </Select.Portal>
+                  </Select.Root>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <BellOff className="h-4 w-4" />
+                    <span>
+                      Muted until {muteEndTime?.toLocaleString()}
+                    </span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleUnmute}
+                    className="text-sm"
+                  >
+                    Unmute
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </Dialog.Content>
       </Dialog.Portal>
