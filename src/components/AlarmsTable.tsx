@@ -2,11 +2,9 @@ import { Table, TableBody } from "@/components/ui/table";
 import { useState } from "react";
 import TicketDialog from "./TicketDialog";
 import { Alarm, SortField, SortDirection, StatusFilter } from "@/types/alarm";
-import FilterPills from "./alarms/FilterPills";
 import AlarmsTableHeader from "./alarms/AlarmsTableHeader";
 import AlarmRow from "./alarms/AlarmRow";
 
-// Mock data - replace with real data later
 const initialAlarms: Alarm[] = [
   {
     id: "AL-001",
@@ -129,16 +127,13 @@ const AlarmsTable = () => {
 
   return (
     <div className="w-full space-y-6">
-      <FilterPills 
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-      />
-
       <Table>
         <AlarmsTableHeader
           sortField={sortField}
           sortDirection={sortDirection}
           handleSort={handleSort}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
         />
         <TableBody>
           {sortedAlarms.map((alarm) => (
