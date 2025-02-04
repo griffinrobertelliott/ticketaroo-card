@@ -77,7 +77,7 @@ const AlarmsTableHeader = ({
   }) => (
     <TableHead className="text-alarm-muted">
       <DropdownMenu>
-        <DropdownMenuTrigger className="flex items-center px-2 py-1 rounded-full bg-alarm-card/50 hover:bg-alarm-card transition-colors">
+        <DropdownMenuTrigger className="flex items-center px-2 py-1 rounded-full bg-secondary hover:bg-secondary/80 transition-colors">
           {children}
         </DropdownMenuTrigger>
         <DropdownMenuContent>
