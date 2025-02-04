@@ -218,6 +218,7 @@ const AlarmsTable = () => {
               onClick={handleRowClick}
               getSeverityColor={getSeverityColor}
               getStatusColor={getStatusColor}
+              onAlarmUpdate={handleAlarmUpdate}
             />
           ))}
         </TableBody>
