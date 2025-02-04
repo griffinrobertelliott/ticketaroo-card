@@ -105,7 +105,7 @@ const AlarmsTableHeader = ({
     const { active, over } = event;
 
     if (active.id !== over.id) {
-      setColumns((items) => {
+      setColumns((items: Column[]) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
         return arrayMove(items, oldIndex, newIndex);

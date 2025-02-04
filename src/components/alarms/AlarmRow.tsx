@@ -1,3 +1,4 @@
+import React from 'react';
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Clock, MoreHorizontal } from "lucide-react";
 import { Alarm } from "@/types/alarm";
