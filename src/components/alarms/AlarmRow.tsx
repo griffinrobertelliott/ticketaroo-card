@@ -1,4 +1,3 @@
-import React from 'react';
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Clock } from "lucide-react";
 import { Alarm } from "@/types/alarm";
@@ -52,17 +51,12 @@ const AlarmRow = ({
           <TableCell className="font-medium text-foreground">
             <div className="flex flex-col md:flex-row md:items-center gap-2">
               <span>{alarm.device}</span>
-              {isMobile && (
-                <span className={`${getStatusColor(alarm.status)} text-sm`}>
-                  {alarm.status}
-                </span>
-              )}
             </div>
           </TableCell>
         );
       case 'status':
-        return isMobile ? null : (
-          <TableCell>
+        return (
+          <TableCell className={isMobile ? "py-1" : ""}>
             <span className={`${getStatusColor(alarm.status)} inline-flex items-center gap-2 px-3 py-1 rounded-full bg-alarm-card/50`}>
               <div className="w-1.5 h-1.5 rounded-full bg-current" />
               {alarm.status}
@@ -77,7 +71,7 @@ const AlarmRow = ({
         );
       case 'assignedTo':
         return (
-          <TableCell className="hidden md:table-cell">
+          <TableCell>
             <DropdownMenu>
               <DropdownMenuTrigger className="px-3 py-1.5 text-sm rounded-full hover:bg-alarm-card/70 transition-colors">
                 {alarm.assignedTo ? (
@@ -132,7 +126,7 @@ const AlarmRow = ({
         );
       case 'timeElapsed':
         return (
-          <TableCell className="text-alarm-muted">
+          <TableCell className="text-alarm-muted hidden md:table-cell">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4" />
               {alarm.timeElapsed}

@@ -118,7 +118,7 @@ const AlarmsTableHeader = ({
   };
 
   const renderHeaderContent = (column: Column) => {
-    if (isMobile && !['device', 'timeElapsed'].includes(column.id)) {
+    if (isMobile && !['device', 'status', 'assignedTo'].includes(column.id)) {
       return null;
     }
 
@@ -266,7 +266,7 @@ const AlarmsTableHeader = ({
                 key={column.id}
                 id={column.id}
                 className={`first:pl-4 last:pr-4 py-4 text-foreground font-medium text-sm border-b-2 border-alarm-card/30 ${
-                  isMobile && !['device', 'timeElapsed'].includes(column.id) ? 'hidden' : ''
+                  isMobile && !['device', 'status', 'assignedTo'].includes(column.id) ? 'hidden' : ''
                 }`}
               >
                 {renderHeaderContent(column)}
