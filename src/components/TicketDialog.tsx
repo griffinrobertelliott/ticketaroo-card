@@ -48,7 +48,7 @@ const TicketDialog = ({ isOpen, onClose }: TicketDialogProps) => {
     setIsMuted(false);
     setMuteDuration("");
     setMuteEndTime(null);
-    setStatus("To Do");
+    setStatus("Unacknowledged"); // Changed from "To Do" to "Unacknowledged"
   };
 
   const statusOptions: Status[] = ["To Do", "In Progress", "Done", "Muted"];
