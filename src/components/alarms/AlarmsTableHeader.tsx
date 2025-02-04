@@ -1,5 +1,5 @@
 import { TableHeader, TableRow } from "@/components/ui/table";
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { ChevronUp, ChevronDown, X } from "lucide-react";
 import { 
   SortField, 
   StatusFilter, 
@@ -105,6 +105,43 @@ const AlarmsTableHeader = ({
     }
   };
 
+  const getFilterLabel = (columnId: string) => {
+    switch (columnId) {
+      case 'status':
+        return statusFilter;
+      case 'device':
+        return deviceFilter;
+      case 'assignedTo':
+        return assigneeFilter;
+      case 'urgent':
+        return urgentFilter;
+      case 'severity':
+        return severityFilter;
+      default:
+        return '';
+    }
+  };
+
+  const clearFilter = (columnId: string) => {
+    switch (columnId) {
+      case 'status':
+        setStatusFilter('all');
+        break;
+      case 'device':
+        setDeviceFilter('all');
+        break;
+      case 'assignedTo':
+        setAssigneeFilter('all');
+        break;
+      case 'urgent':
+        setUrgentFilter('all');
+        break;
+      case 'severity':
+        setSeverityFilter('all');
+        break;
+    }
+  };
+
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
 
@@ -130,16 +167,32 @@ const AlarmsTableHeader = ({
     switch (column.type) {
       case 'filterable':
       case 'both':
+        const isActive = isFilterActive(column.id);
+        const filterLabel = getFilterLabel(column.id);
         return (
           <DropdownMenu>
             <DropdownMenuTrigger 
               className={`${baseClasses} ${
-                isFilterActive(column.id)
+                isActive
                   ? activeClasses
                   : inactiveClasses
-              }`}
+              } group`}
             >
-              {column.label}
+              <span className="flex items-center gap-2">
+                {column.label}
+                {isActive && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      clearFilter(column.id);
+                    }}
+                    className="p-0.5 hover:bg-white/20 rounded-full transition-colors"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </span>
+              {isActive && <span className="ml-2 opacity-80">{filterLabel}</span>}
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {renderFilterContent(column.id)}
