@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useState } from "react";
 import TicketDialog from "./TicketDialog";
-import { Clock, MoreHorizontal } from "lucide-react";
+import { Clock, MoreHorizontal, ChevronUp, ChevronDown } from "lucide-react";
 
 interface Alarm {
   id: string;
@@ -13,6 +13,10 @@ interface Alarm {
   timeElapsed: string;
   severity: "Warning" | "Critical" | "Info";
 }
+
+type SortField = keyof Alarm;
+type SortDirection = "asc" | "desc";
+type StatusFilter = "all-active" | "muted" | "unacknowledged" | "acknowledged" | "resolved";
 
 // Mock data - replace with real data later
 const mockAlarms: Alarm[] = [
@@ -50,6 +54,9 @@ const mockAlarms: Alarm[] = [
 
 const AlarmsTable = () => {
   const [selectedAlarmId, setSelectedAlarmId] = useState<string | null>(null);
+  const [sortField, setSortField] = useState<SortField>("status");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all-active");
 
   const handleRowClick = (alarmId: string) => {
     setSelectedAlarmId(alarmId);
@@ -57,6 +64,24 @@ const AlarmsTable = () => {
 
   const handleCloseDialog = () => {
     setSelectedAlarmId(null);
+  };
+
+  const handleSort = (field: SortField) => {
+    if (field === sortField) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
+
+  const getSortIcon = (field: SortField) => {
+    if (field !== sortField) return null;
+    return sortDirection === "asc" ? (
+      <ChevronUp className="w-4 h-4 ml-1" />
+    ) : (
+      <ChevronDown className="w-4 h-4 ml-1" />
+    );
   };
 
   const getSeverityColor = (severity: Alarm["severity"]) => {
@@ -83,23 +108,106 @@ const AlarmsTable = () => {
     }
   };
 
+  const filteredAlarms = mockAlarms.filter((alarm) => {
+    switch (statusFilter) {
+      case "all-active":
+        return ["Unacknowledged", "Acknowledged"].includes(alarm.status);
+      case "muted":
+        return alarm.status === "In Progress";
+      case "unacknowledged":
+        return alarm.status === "Unacknowledged";
+      case "acknowledged":
+        return alarm.status === "Acknowledged";
+      case "resolved":
+        return alarm.status === "Resolved";
+      default:
+        return true;
+    }
+  });
+
+  const sortedAlarms = [...filteredAlarms].sort((a, b) => {
+    const aValue = a[sortField];
+    const bValue = b[sortField];
+    const direction = sortDirection === "asc" ? 1 : -1;
+    
+    if (aValue < bValue) return -1 * direction;
+    if (aValue > bValue) return 1 * direction;
+    return 0;
+  });
+
+  const FilterPill = ({ label, value }: { label: string; value: StatusFilter }) => (
+    <button
+      onClick={() => setStatusFilter(value)}
+      className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+        statusFilter === value
+          ? "bg-alarm-accent text-alarm-background"
+          : "bg-alarm-card hover:bg-alarm-card/80 text-alarm-muted"
+      }`}
+    >
+      {label}
+    </button>
+  );
+
   return (
-    <div className="w-full">
+    <div className="w-full space-y-6">
+      <div className="flex gap-3 overflow-x-auto pb-2">
+        <FilterPill label="All Active" value="all-active" />
+        <FilterPill label="Muted" value="muted" />
+        <FilterPill label="Unacknowledged" value="unacknowledged" />
+        <FilterPill label="Acknowledged" value="acknowledged" />
+        <FilterPill label="Resolved" value="resolved" />
+      </div>
+
       <Table>
         <TableHeader>
           <TableRow className="border-b border-alarm-card hover:bg-transparent">
-            <TableHead className="text-alarm-muted">Device</TableHead>
-            <TableHead className="text-alarm-muted">Status</TableHead>
-            <TableHead className="text-alarm-muted">Description</TableHead>
+            <TableHead 
+              className="text-alarm-muted cursor-pointer"
+              onClick={() => handleSort("device")}
+            >
+              <div className="flex items-center">
+                Device {getSortIcon("device")}
+              </div>
+            </TableHead>
+            <TableHead 
+              className="text-alarm-muted cursor-pointer"
+              onClick={() => handleSort("status")}
+            >
+              <div className="flex items-center">
+                Status {getSortIcon("status")}
+              </div>
+            </TableHead>
+            <TableHead 
+              className="text-alarm-muted cursor-pointer"
+              onClick={() => handleSort("description")}
+            >
+              <div className="flex items-center">
+                Description {getSortIcon("description")}
+              </div>
+            </TableHead>
             <TableHead className="text-alarm-muted">Assigned To</TableHead>
             <TableHead className="text-alarm-muted">Urgent</TableHead>
-            <TableHead className="text-alarm-muted">Time Elapsed</TableHead>
-            <TableHead className="text-alarm-muted">Severity</TableHead>
+            <TableHead 
+              className="text-alarm-muted cursor-pointer"
+              onClick={() => handleSort("timeElapsed")}
+            >
+              <div className="flex items-center">
+                Time Elapsed {getSortIcon("timeElapsed")}
+              </div>
+            </TableHead>
+            <TableHead 
+              className="text-alarm-muted cursor-pointer"
+              onClick={() => handleSort("severity")}
+            >
+              <div className="flex items-center">
+                Severity {getSortIcon("severity")}
+              </div>
+            </TableHead>
             <TableHead className="text-alarm-muted text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {mockAlarms.map((alarm) => (
+          {sortedAlarms.map((alarm) => (
             <TableRow
               key={alarm.id}
               onClick={() => handleRowClick(alarm.id)}
