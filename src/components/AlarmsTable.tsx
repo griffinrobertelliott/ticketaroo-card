@@ -52,7 +52,7 @@ const AlarmsTable = () => {
   const [selectedAlarmId, setSelectedAlarmId] = useState<string | null>(null);
   const [sortField, setSortField] = useState<SortField>("status");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all-active");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [deviceFilter, setDeviceFilter] = useState<DeviceFilter>("all");
   const [assigneeFilter, setAssigneeFilter] = useState<AssigneeFilter>("all");
   const [urgentFilter, setUrgentFilter] = useState<UrgentFilter>("all");
