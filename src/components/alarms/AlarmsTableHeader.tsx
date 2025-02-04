@@ -115,16 +115,20 @@ const AlarmsTableHeader = ({
   };
 
   const renderHeaderContent = (column: Column) => {
+    const baseClasses = "flex items-center px-2 py-1 rounded-full transition-colors";
+    const activeClasses = "bg-primary text-primary-foreground hover:bg-primary/90";
+    const inactiveClasses = "bg-secondary hover:bg-secondary/80";
+
     switch (column.type) {
       case 'filterable':
       case 'both':
         return (
           <DropdownMenu>
             <DropdownMenuTrigger 
-              className={`flex items-center px-2 py-1 rounded-full transition-colors ${
+              className={`${baseClasses} ${
                 isFilterActive(column.id)
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                  : "bg-secondary hover:bg-secondary/80"
+                  ? activeClasses
+                  : inactiveClasses
               }`}
             >
               {column.label}
@@ -136,12 +140,19 @@ const AlarmsTableHeader = ({
         );
       case 'sortable':
         return (
-          <div className="flex items-center cursor-pointer" onClick={() => handleSort(column.id as SortField)}>
+          <div 
+            className={`${baseClasses} ${inactiveClasses} cursor-pointer`}
+            onClick={() => handleSort(column.id as SortField)}
+          >
             {column.label} {getSortIcon(column.id as SortField)}
           </div>
         );
       default:
-        return column.label;
+        return (
+          <div className={`${baseClasses} ${inactiveClasses}`}>
+            {column.label}
+          </div>
+        );
     }
   };
 
