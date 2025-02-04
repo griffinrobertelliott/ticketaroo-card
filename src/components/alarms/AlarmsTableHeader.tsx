@@ -131,9 +131,7 @@ const AlarmsTableHeader = ({
   };
 
   const renderHeaderContent = (column: Column) => {
-    const columnType = column.type;
-    
-    if (columnType === 'filterable' || columnType === 'both') {
+    if (column.type === 'filterable' || column.type === 'both') {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger 
@@ -152,7 +150,7 @@ const AlarmsTableHeader = ({
       );
     }
     
-    if (columnType === 'sortable' || columnType === 'both') {
+    if (column.type === 'sortable' || column.type === 'both') {
       return (
         <div className="flex items-center cursor-pointer" onClick={() => handleSort(column.id as SortField)}>
           {column.label} {getSortIcon(column.id as SortField)}
