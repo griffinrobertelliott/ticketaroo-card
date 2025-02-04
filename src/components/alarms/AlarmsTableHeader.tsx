@@ -1,6 +1,13 @@
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChevronUp, ChevronDown, Filter } from "lucide-react";
-import { SortField, Alarm, StatusFilter } from "@/types/alarm";
+import { 
+  SortField, 
+  StatusFilter, 
+  DeviceFilter,
+  AssigneeFilter,
+  UrgentFilter,
+  SeverityFilter 
+} from "@/types/alarm";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +21,15 @@ interface AlarmsTableHeaderProps {
   handleSort: (field: SortField) => void;
   statusFilter: StatusFilter;
   setStatusFilter: (filter: StatusFilter) => void;
+  deviceFilter: DeviceFilter;
+  setDeviceFilter: (filter: DeviceFilter) => void;
+  assigneeFilter: AssigneeFilter;
+  setAssigneeFilter: (filter: AssigneeFilter) => void;
+  urgentFilter: UrgentFilter;
+  setUrgentFilter: (filter: UrgentFilter) => void;
+  severityFilter: SeverityFilter;
+  setSeverityFilter: (filter: SeverityFilter) => void;
+  devices: string[];
 }
 
 const AlarmsTableHeader = ({ 
@@ -21,7 +37,16 @@ const AlarmsTableHeader = ({
   sortDirection, 
   handleSort,
   statusFilter,
-  setStatusFilter 
+  setStatusFilter,
+  deviceFilter,
+  setDeviceFilter,
+  assigneeFilter,
+  setAssigneeFilter,
+  urgentFilter,
+  setUrgentFilter,
+  severityFilter,
+  setSeverityFilter,
+  devices
 }: AlarmsTableHeaderProps) => {
   const getSortIcon = (field: SortField) => {
     if (field !== sortField) return null;
@@ -43,7 +68,13 @@ const AlarmsTableHeader = ({
     </TableHead>
   );
 
-  const FilterableHeader = ({ children }: { children: React.ReactNode }) => (
+  const FilterableHeader = ({ 
+    children,
+    content
+  }: { 
+    children: React.ReactNode;
+    content: React.ReactNode;
+  }) => (
     <TableHead className="text-alarm-muted">
       <div className="flex items-center justify-between">
         {children}
@@ -52,6 +83,33 @@ const AlarmsTableHeader = ({
             <Filter className="w-4 h-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
+            {content}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </TableHead>
+  );
+
+  return (
+    <TableHeader>
+      <TableRow className="border-b border-alarm-card hover:bg-transparent">
+        <FilterableHeader content={
+          <>
+            <DropdownMenuItem onClick={() => setDeviceFilter("all")}>
+              All Devices
+            </DropdownMenuItem>
+            {devices.map(device => (
+              <DropdownMenuItem key={device} onClick={() => setDeviceFilter(device)}>
+                {device}
+              </DropdownMenuItem>
+            ))}
+          </>
+        }>
+          Device
+        </FilterableHeader>
+
+        <FilterableHeader content={
+          <>
             <DropdownMenuItem onClick={() => setStatusFilter("all-active")}>
               All Active
             </DropdownMenuItem>
@@ -67,22 +125,66 @@ const AlarmsTableHeader = ({
             <DropdownMenuItem onClick={() => setStatusFilter("resolved")}>
               Resolved
             </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </TableHead>
-  );
+          </>
+        }>
+          Status
+        </FilterableHeader>
 
-  return (
-    <TableHeader>
-      <TableRow className="border-b border-alarm-card hover:bg-transparent">
-        <SortableHeader field="device">Device</SortableHeader>
-        <FilterableHeader>Status</FilterableHeader>
         <SortableHeader field="description">Description</SortableHeader>
-        <TableHead className="text-alarm-muted">Assigned To</TableHead>
-        <TableHead className="text-alarm-muted">Urgent</TableHead>
+
+        <FilterableHeader content={
+          <>
+            <DropdownMenuItem onClick={() => setAssigneeFilter("all")}>
+              All
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setAssigneeFilter("assigned")}>
+              Assigned
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setAssigneeFilter("unassigned")}>
+              Unassigned
+            </DropdownMenuItem>
+          </>
+        }>
+          Assigned To
+        </FilterableHeader>
+
+        <FilterableHeader content={
+          <>
+            <DropdownMenuItem onClick={() => setUrgentFilter("all")}>
+              All
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setUrgentFilter("urgent")}>
+              Urgent
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setUrgentFilter("not-urgent")}>
+              Not Urgent
+            </DropdownMenuItem>
+          </>
+        }>
+          Urgent
+        </FilterableHeader>
+
         <SortableHeader field="timeElapsed">Time Elapsed</SortableHeader>
-        <SortableHeader field="severity">Severity</SortableHeader>
+
+        <FilterableHeader content={
+          <>
+            <DropdownMenuItem onClick={() => setSeverityFilter("all")}>
+              All Severities
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setSeverityFilter("Warning")}>
+              Warning
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setSeverityFilter("Critical")}>
+              Critical
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setSeverityFilter("Info")}>
+              Info
+            </DropdownMenuItem>
+          </>
+        }>
+          Severity
+        </FilterableHeader>
+
         <TableHead className="text-alarm-muted text-right">Actions</TableHead>
       </TableRow>
     </TableHeader>

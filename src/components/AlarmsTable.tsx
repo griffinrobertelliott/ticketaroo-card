@@ -1,7 +1,16 @@
 import { Table, TableBody } from "@/components/ui/table";
 import { useState } from "react";
 import TicketDialog from "./TicketDialog";
-import { Alarm, SortField, SortDirection, StatusFilter } from "@/types/alarm";
+import { 
+  Alarm, 
+  SortField, 
+  SortDirection, 
+  StatusFilter,
+  DeviceFilter,
+  AssigneeFilter,
+  UrgentFilter,
+  SeverityFilter 
+} from "@/types/alarm";
 import AlarmsTableHeader from "./alarms/AlarmsTableHeader";
 import AlarmRow from "./alarms/AlarmRow";
 
@@ -44,6 +53,10 @@ const AlarmsTable = () => {
   const [sortField, setSortField] = useState<SortField>("status");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all-active");
+  const [deviceFilter, setDeviceFilter] = useState<DeviceFilter>("all");
+  const [assigneeFilter, setAssigneeFilter] = useState<AssigneeFilter>("all");
+  const [urgentFilter, setUrgentFilter] = useState<UrgentFilter>("all");
+  const [severityFilter, setSeverityFilter] = useState<SeverityFilter>("all");
 
   const selectedAlarm = alarms.find(alarm => alarm.id === selectedAlarmId);
 
@@ -99,20 +112,50 @@ const AlarmsTable = () => {
   };
 
   const filteredAlarms = alarms.filter((alarm) => {
-    switch (statusFilter) {
-      case "all-active":
-        return ["Unacknowledged", "Acknowledged"].includes(alarm.status);
-      case "muted":
-        return alarm.status === "Muted";
-      case "unacknowledged":
-        return alarm.status === "Unacknowledged";
-      case "acknowledged":
-        return alarm.status === "Acknowledged";
-      case "resolved":
-        return alarm.status === "Resolved";
-      default:
-        return true;
-    }
+    const matchesStatus = (() => {
+      switch (statusFilter) {
+        case "all-active":
+          return ["Unacknowledged", "Acknowledged"].includes(alarm.status);
+        case "muted":
+          return alarm.status === "Muted";
+        case "unacknowledged":
+          return alarm.status === "Unacknowledged";
+        case "acknowledged":
+          return alarm.status === "Acknowledged";
+        case "resolved":
+          return alarm.status === "Resolved";
+        default:
+          return true;
+      }
+    })();
+
+    const matchesDevice = deviceFilter === "all" || alarm.device === deviceFilter;
+    
+    const matchesAssignee = (() => {
+      switch (assigneeFilter) {
+        case "assigned":
+          return alarm.assignedTo !== null;
+        case "unassigned":
+          return alarm.assignedTo === null;
+        default:
+          return true;
+      }
+    })();
+
+    const matchesUrgent = (() => {
+      switch (urgentFilter) {
+        case "urgent":
+          return alarm.urgent;
+        case "not-urgent":
+          return !alarm.urgent;
+        default:
+          return true;
+      }
+    })();
+
+    const matchesSeverity = severityFilter === "all" || alarm.severity === severityFilter;
+
+    return matchesStatus && matchesDevice && matchesAssignee && matchesUrgent && matchesSeverity;
   });
 
   const sortedAlarms = [...filteredAlarms].sort((a, b) => {
@@ -134,6 +177,15 @@ const AlarmsTable = () => {
           handleSort={handleSort}
           statusFilter={statusFilter}
           setStatusFilter={setStatusFilter}
+          deviceFilter={deviceFilter}
+          setDeviceFilter={setDeviceFilter}
+          assigneeFilter={assigneeFilter}
+          setAssigneeFilter={setAssigneeFilter}
+          urgentFilter={urgentFilter}
+          setUrgentFilter={setUrgentFilter}
+          severityFilter={severityFilter}
+          setSeverityFilter={setSeverityFilter}
+          devices={Array.from(new Set(alarms.map(alarm => alarm.device)))}
         />
         <TableBody>
           {sortedAlarms.map((alarm) => (
