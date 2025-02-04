@@ -1,6 +1,6 @@
 import React from 'react';
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Clock, MoreHorizontal } from "lucide-react";
+import { Clock } from "lucide-react";
 import { Alarm } from "@/types/alarm";
 import { Column } from "../AlarmsTable";
 import {
@@ -112,14 +112,6 @@ const AlarmRow = ({
         );
       case 'severity':
         return <TableCell className={getSeverityColor(alarm.severity)}>{alarm.severity}</TableCell>;
-      case 'actions':
-        return (
-          <TableCell className="text-right">
-            <button className="p-2 hover:bg-alarm-card rounded">
-              <MoreHorizontal className="w-4 h-4 text-alarm-muted" />
-            </button>
-          </TableCell>
-        );
       default:
         return <TableCell />;
     }

@@ -61,7 +61,6 @@ const initialColumns: Column[] = [
   { id: 'urgent', label: 'Urgent', type: 'filterable' },
   { id: 'timeElapsed', label: 'Time Elapsed', type: 'sortable' },
   { id: 'severity', label: 'Severity', type: 'filterable' },
-  { id: 'actions', label: 'Actions', type: 'none' },
 ];
 
 const AlarmsTable = () => {
