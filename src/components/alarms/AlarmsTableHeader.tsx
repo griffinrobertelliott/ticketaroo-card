@@ -31,10 +31,12 @@ import {
 import DraggableHeader from './DraggableHeader';
 import { useState } from "react";
 
+type ColumnType = 'sortable' | 'filterable' | 'both' | 'none';
+
 interface Column {
   id: string;
   label: string;
-  type: 'sortable' | 'filterable' | 'both' | 'none';
+  type: ColumnType;
 }
 
 interface AlarmsTableHeaderProps {
@@ -129,7 +131,9 @@ const AlarmsTableHeader = ({
   };
 
   const renderHeaderContent = (column: Column) => {
-    if (column.type === 'filterable' || column.type === 'both') {
+    const columnType = column.type as ColumnType;
+    
+    if (columnType === 'filterable' || columnType === 'both') {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger 
@@ -148,7 +152,7 @@ const AlarmsTableHeader = ({
       );
     }
     
-    if (column.type === 'sortable' || column.type === 'both') {
+    if (columnType === 'sortable' || columnType === 'both') {
       return (
         <div className="flex items-center cursor-pointer" onClick={() => handleSort(column.id as SortField)}>
           {column.label} {getSortIcon(column.id as SortField)}
