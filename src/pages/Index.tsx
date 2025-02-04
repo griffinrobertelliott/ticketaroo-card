@@ -1,23 +1,10 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import TicketDialog from "@/components/TicketDialog";
+import AlarmsTable from "@/components/AlarmsTable";
 
 const Index = () => {
-  const [isTicketOpen, setIsTicketOpen] = useState(false);
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <Button 
-        onClick={() => setIsTicketOpen(true)}
-        className="bg-blue-600 hover:bg-blue-700"
-      >
-        Open Ticket
-      </Button>
-      
-      <TicketDialog 
-        isOpen={isTicketOpen} 
-        onClose={() => setIsTicketOpen(false)} 
-      />
+    <div className="min-h-screen p-8 bg-gray-50">
+      <h1 className="text-2xl font-semibold mb-6">Alarm Management</h1>
+      <AlarmsTable />
     </div>
   );
 };
