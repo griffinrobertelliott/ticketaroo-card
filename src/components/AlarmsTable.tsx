@@ -23,10 +23,10 @@ const mockAlarms: Alarm[] = [
   {
     id: "AL-001",
     device: "Spot-1",
-    status: "Unacknowledged",
+    status: "Muted",
     description: "robot is stuck",
     assignedTo: null,
-    urgent: true,
+    urgent: false,
     timeElapsed: "144h 15m 56s",
     severity: "Warning"
   },
