@@ -47,24 +47,35 @@ const AlarmRow = ({
       case 'device':
         return <TableCell className="font-medium text-foreground">{alarm.device}</TableCell>;
       case 'status':
-        return <TableCell className={getStatusColor(alarm.status)}>{alarm.status}</TableCell>;
+        return (
+          <TableCell>
+            <span className={`${getStatusColor(alarm.status)} inline-flex items-center gap-2 px-3 py-1 rounded-full bg-alarm-card/50`}>
+              <div className="w-1.5 h-1.5 rounded-full bg-current" />
+              {alarm.status}
+            </span>
+          </TableCell>
+        );
       case 'description':
-        return <TableCell className="text-alarm-muted">{alarm.description}</TableCell>;
+        return <TableCell className="text-alarm-muted max-w-[300px] truncate">{alarm.description}</TableCell>;
       case 'assignedTo':
         return (
           <TableCell>
             <DropdownMenu>
-              <DropdownMenuTrigger className="px-2 py-1 text-sm text-alarm-accent hover:bg-alarm-card rounded">
-                {alarm.assignedTo ? alarm.assignedTo : 'ASSIGN'}
+              <DropdownMenuTrigger className="px-3 py-1.5 text-sm rounded-full hover:bg-alarm-card/70 transition-colors">
+                {alarm.assignedTo ? (
+                  <span className="text-alarm-accent">{alarm.assignedTo}</span>
+                ) : (
+                  <span className="text-alarm-muted">ASSIGN</span>
+                )}
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-alarm-card border border-alarm-muted/20">
+              <DropdownMenuContent className="dropdown-content-animate bg-alarm-card border border-alarm-muted/20">
                 {alarm.assignedTo ? (
                   <DropdownMenuItem
                     onClick={(e) => {
                       e.stopPropagation();
                       handleAssign(null);
                     }}
-                    className="flex items-center gap-2 hover:bg-alarm-muted/10 text-alarm-warning"
+                    className="text-alarm-warning hover:bg-alarm-muted/10"
                   >
                     Unassign
                   </DropdownMenuItem>
@@ -95,8 +106,8 @@ const AlarmRow = ({
         return (
           <TableCell>
             {alarm.urgent && (
-              <div className="w-6 h-6 rounded bg-alarm-urgent/20 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-alarm-urgent" />
+              <div className="w-6 h-6 rounded-full bg-alarm-urgent/20 flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-alarm-urgent animate-pulse" />
               </div>
             )}
           </TableCell>
@@ -111,7 +122,13 @@ const AlarmRow = ({
           </TableCell>
         );
       case 'severity':
-        return <TableCell className={getSeverityColor(alarm.severity)}>{alarm.severity}</TableCell>;
+        return (
+          <TableCell>
+            <span className={`${getSeverityColor(alarm.severity)} px-3 py-1 rounded-full bg-alarm-card/50`}>
+              {alarm.severity}
+            </span>
+          </TableCell>
+        );
       default:
         return <TableCell />;
     }
@@ -120,7 +137,7 @@ const AlarmRow = ({
   return (
     <TableRow
       onClick={() => onClick(alarm.id)}
-      className="cursor-pointer border-b border-alarm-card hover:bg-alarm-card/50"
+      className="table-row-animate cursor-pointer border-b border-alarm-card"
     >
       {columns.map((column) => (
         <React.Fragment key={column.id}>
