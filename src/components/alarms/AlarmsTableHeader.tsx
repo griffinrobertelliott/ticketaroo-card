@@ -115,10 +115,10 @@ const AlarmsTableHeader = ({
   };
 
   const renderHeaderContent = (column: Column) => {
-    const baseClasses = "flex items-center px-2 py-1 rounded-full transition-colors";
-    const activeClasses = "bg-primary text-primary-foreground hover:bg-primary/90";
-    const inactiveClasses = "bg-secondary hover:bg-secondary/80";
-    const staticClasses = "text-alarm-muted";
+    const baseClasses = "flex items-center px-3 py-2 rounded-full transition-all duration-200";
+    const activeClasses = "bg-primary/20 text-primary hover:bg-primary/30";
+    const inactiveClasses = "bg-secondary/50 hover:bg-secondary/70";
+    const staticClasses = "text-alarm-muted/80";
 
     switch (column.type) {
       case 'filterable':
@@ -130,7 +130,7 @@ const AlarmsTableHeader = ({
                 isFilterActive(column.id)
                   ? activeClasses
                   : inactiveClasses
-              }`}
+              } backdrop-blur-sm`}
             >
               {column.label}
             </DropdownMenuTrigger>
@@ -142,7 +142,7 @@ const AlarmsTableHeader = ({
       case 'sortable':
         return (
           <div 
-            className={`${baseClasses} ${inactiveClasses} cursor-pointer`}
+            className={`${baseClasses} ${inactiveClasses} cursor-pointer backdrop-blur-sm`}
             onClick={() => handleSort(column.id as SortField)}
           >
             {column.label} {getSortIcon(column.id as SortField)}
@@ -150,7 +150,7 @@ const AlarmsTableHeader = ({
         );
       default:
         return (
-          <div className={staticClasses}>
+          <div className={`${baseClasses} ${staticClasses} backdrop-blur-sm`}>
             {column.label}
           </div>
         );
@@ -244,7 +244,7 @@ const AlarmsTableHeader = ({
 
   return (
     <TableHeader>
-      <TableRow className="border-b border-alarm-card hover:bg-transparent">
+      <TableRow className="border-b border-alarm-card/30 hover:bg-transparent backdrop-blur-sm bg-alarm-card/40">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -258,7 +258,7 @@ const AlarmsTableHeader = ({
               <DraggableHeader
                 key={column.id}
                 id={column.id}
-                className="text-alarm-muted"
+                className="first:pl-4 last:pr-4 py-3 text-alarm-muted font-medium text-sm"
               >
                 {renderHeaderContent(column)}
               </DraggableHeader>
