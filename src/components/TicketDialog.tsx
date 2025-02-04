@@ -1,15 +1,18 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TicketHeader from "./ticket/TicketHeader";
 import TicketDescription from "./ticket/TicketDescription";
 import TicketMetadata from "./ticket/TicketMetadata";
 import TicketStatus from "./ticket/TicketStatus";
 import TicketAssignee from "./ticket/TicketAssignee";
 import TicketMuteControls from "./ticket/TicketMuteControls";
+import { Alarm } from "@/types/alarm";
 
 interface TicketDialogProps {
   isOpen: boolean;
   onClose: () => void;
+  alarm?: Alarm;
+  onAlarmUpdate: (alarm: Alarm) => void;
 }
 
 type Status = "Unacknowledged" | "To Do" | "In Progress" | "Done" | "Muted";
@@ -20,7 +23,7 @@ type Assignee = {
   initials: string;
 } | null;
 
-const TicketDialog = ({ isOpen, onClose }: TicketDialogProps) => {
+const TicketDialog = ({ isOpen, onClose, alarm, onAlarmUpdate }: TicketDialogProps) => {
   const [isMuted, setIsMuted] = useState(false);
   const [muteDuration, setMuteDuration] = useState<string>("");
   const [muteEndTime, setMuteEndTime] = useState<Date | null>(null);
@@ -32,8 +35,21 @@ const TicketDialog = ({ isOpen, onClose }: TicketDialogProps) => {
     initials: "JD"
   });
 
+  useEffect(() => {
+    if (alarm) {
+      setIsMuted(alarm.status === "Muted");
+      setStatus(alarm.status as Status);
+      setAssignee(alarm.assignedTo ? {
+        id: "1", // This is mock data - in real app we'd have proper IDs
+        name: alarm.assignedTo,
+        email: `${alarm.assignedTo.toLowerCase().replace(" ", ".")}@example.com`,
+        initials: alarm.assignedTo.split(" ").map(n => n[0]).join("")
+      } : null);
+    }
+  }, [alarm]);
+
   const handleMute = (duration: string) => {
-    if (duration) {
+    if (duration && alarm) {
       setIsMuted(true);
       setMuteDuration(duration);
       const now = new Date();
@@ -41,14 +57,28 @@ const TicketDialog = ({ isOpen, onClose }: TicketDialogProps) => {
       setMuteEndTime(endTime);
       setStatus("Muted");
       setAssignee(null);
+
+      onAlarmUpdate({
+        ...alarm,
+        status: "Muted",
+        assignedTo: null
+      });
     }
   };
 
   const handleUnmute = () => {
-    setIsMuted(false);
-    setMuteDuration("");
-    setMuteEndTime(null);
-    setStatus("Unacknowledged");
+    if (alarm) {
+      setIsMuted(false);
+      setMuteDuration("");
+      setMuteEndTime(null);
+      setStatus("Unacknowledged");
+      
+      onAlarmUpdate({
+        ...alarm,
+        status: "Unacknowledged",
+        assignedTo: null
+      });
+    }
   };
 
   const statusOptions: Status[] = ["To Do", "In Progress", "Done", "Muted", "Unacknowledged"];
@@ -73,22 +103,24 @@ const TicketDialog = ({ isOpen, onClose }: TicketDialogProps) => {
     }
   };
 
+  if (!alarm) return null;
+
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog.Portal>
         <Dialog.Overlay className="ticket-popup-overlay" />
         <Dialog.Content className="ticket-popup-content">
           <TicketHeader
-            ticketId="TICKET-123"
+            ticketId={alarm.id}
             status={status}
-            title="Implement new authentication flow"
+            title={alarm.description}
             isMuted={isMuted}
             getStatusColor={getStatusColor}
           />
 
           <div className="space-y-6">
             <TicketDescription
-              description="We need to implement a new authentication flow that includes social login options and improved security measures. This should follow the latest design specifications and security best practices."
+              description={alarm.description}
             />
 
             <TicketMetadata />
@@ -96,7 +128,13 @@ const TicketDialog = ({ isOpen, onClose }: TicketDialogProps) => {
             <TicketStatus
               status={status}
               isMuted={isMuted}
-              onStatusChange={(value) => setStatus(value as Status)}
+              onStatusChange={(value) => {
+                setStatus(value as Status);
+                onAlarmUpdate({
+                  ...alarm,
+                  status: value as Alarm["status"]
+                });
+              }}
               statusOptions={statusOptions}
             />
 
@@ -106,6 +144,10 @@ const TicketDialog = ({ isOpen, onClose }: TicketDialogProps) => {
               onAssigneeChange={(value) => {
                 const newAssignee = assigneeOptions.find((a) => a.id === value);
                 setAssignee(newAssignee || null);
+                onAlarmUpdate({
+                  ...alarm,
+                  assignedTo: newAssignee?.name || null
+                });
               }}
               assigneeOptions={assigneeOptions}
             />

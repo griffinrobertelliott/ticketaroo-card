@@ -7,11 +7,11 @@ import AlarmsTableHeader from "./alarms/AlarmsTableHeader";
 import AlarmRow from "./alarms/AlarmRow";
 
 // Mock data - replace with real data later
-const mockAlarms: Alarm[] = [
+const initialAlarms: Alarm[] = [
   {
     id: "AL-001",
     device: "Spot-1",
-    status: "Unacknowledged", // Changed from "Muted" to "Unacknowledged"
+    status: "Muted",
     description: "robot is stuck",
     assignedTo: null,
     urgent: false,
@@ -41,10 +41,13 @@ const mockAlarms: Alarm[] = [
 ];
 
 const AlarmsTable = () => {
+  const [alarms, setAlarms] = useState<Alarm[]>(initialAlarms);
   const [selectedAlarmId, setSelectedAlarmId] = useState<string | null>(null);
   const [sortField, setSortField] = useState<SortField>("status");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all-active");
+
+  const selectedAlarm = alarms.find(alarm => alarm.id === selectedAlarmId);
 
   const handleRowClick = (alarmId: string) => {
     setSelectedAlarmId(alarmId);
@@ -52,6 +55,14 @@ const AlarmsTable = () => {
 
   const handleCloseDialog = () => {
     setSelectedAlarmId(null);
+  };
+
+  const handleAlarmUpdate = (updatedAlarm: Alarm) => {
+    setAlarms(prevAlarms => 
+      prevAlarms.map(alarm => 
+        alarm.id === updatedAlarm.id ? updatedAlarm : alarm
+      )
+    );
   };
 
   const handleSort = (field: SortField) => {
@@ -89,7 +100,7 @@ const AlarmsTable = () => {
     }
   };
 
-  const filteredAlarms = mockAlarms.filter((alarm) => {
+  const filteredAlarms = alarms.filter((alarm) => {
     switch (statusFilter) {
       case "all-active":
         return ["Unacknowledged", "Acknowledged"].includes(alarm.status);
@@ -145,6 +156,8 @@ const AlarmsTable = () => {
       <TicketDialog
         isOpen={selectedAlarmId !== null}
         onClose={handleCloseDialog}
+        alarm={selectedAlarm}
+        onAlarmUpdate={handleAlarmUpdate}
       />
     </div>
   );
