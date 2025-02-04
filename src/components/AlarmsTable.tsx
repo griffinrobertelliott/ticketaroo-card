@@ -114,6 +114,8 @@ const AlarmsTable = () => {
   const filteredAlarms = alarms.filter((alarm) => {
     const matchesStatus = (() => {
       switch (statusFilter) {
+        case "all":
+          return true;
         case "all-active":
           return ["Unacknowledged", "Acknowledged"].includes(alarm.status);
         case "muted":
