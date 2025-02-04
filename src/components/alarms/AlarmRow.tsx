@@ -33,7 +33,7 @@ const AlarmRow = ({
   getStatusColor,
   onAlarmUpdate 
 }: AlarmRowProps) => {
-  const handleAssign = (assigneeName: string) => {
+  const handleAssign = (assigneeName: string | null) => {
     if (onAlarmUpdate) {
       onAlarmUpdate({
         ...alarm,
@@ -53,15 +53,23 @@ const AlarmRow = ({
       case 'assignedTo':
         return (
           <TableCell>
-            {alarm.assignedTo ? (
-              <span className="text-alarm-muted">{alarm.assignedTo}</span>
-            ) : (
-              <DropdownMenu>
-                <DropdownMenuTrigger className="px-2 py-1 text-sm text-alarm-accent hover:bg-alarm-card rounded">
-                  ASSIGN
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-alarm-card border border-alarm-muted/20">
-                  {assigneeOptions.map((assignee) => (
+            <DropdownMenu>
+              <DropdownMenuTrigger className="px-2 py-1 text-sm text-alarm-accent hover:bg-alarm-card rounded">
+                {alarm.assignedTo ? alarm.assignedTo : 'ASSIGN'}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-alarm-card border border-alarm-muted/20">
+                {alarm.assignedTo ? (
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAssign(null);
+                    }}
+                    className="flex items-center gap-2 hover:bg-alarm-muted/10 text-alarm-warning"
+                  >
+                    Unassign
+                  </DropdownMenuItem>
+                ) : (
+                  assigneeOptions.map((assignee) => (
                     <DropdownMenuItem
                       key={assignee.id}
                       onClick={(e) => {
@@ -77,10 +85,10 @@ const AlarmRow = ({
                       </div>
                       <span className="text-foreground">{assignee.name}</span>
                     </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+                  ))
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </TableCell>
         );
       case 'urgent':
