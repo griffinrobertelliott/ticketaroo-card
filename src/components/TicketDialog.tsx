@@ -12,7 +12,7 @@ interface TicketDialogProps {
   onClose: () => void;
 }
 
-type Status = "To Do" | "In Progress" | "Done";
+type Status = "To Do" | "In Progress" | "Done" | "Muted";
 type Assignee = {
   id: string;
   name: string;
@@ -39,6 +39,7 @@ const TicketDialog = ({ isOpen, onClose }: TicketDialogProps) => {
       const now = new Date();
       const endTime = new Date(now.getTime() + parseInt(duration) * 60 * 60 * 1000);
       setMuteEndTime(endTime);
+      setStatus("Muted");
       setAssignee(null);
     }
   };
@@ -47,9 +48,10 @@ const TicketDialog = ({ isOpen, onClose }: TicketDialogProps) => {
     setIsMuted(false);
     setMuteDuration("");
     setMuteEndTime(null);
+    setStatus("To Do");
   };
 
-  const statusOptions: Status[] = ["To Do", "In Progress", "Done"];
+  const statusOptions: Status[] = ["To Do", "In Progress", "Done", "Muted"];
   const assigneeOptions: Assignee[] = [
     { id: "1", name: "John Doe", email: "john.doe@example.com", initials: "JD" },
     { id: "2", name: "Jane Smith", email: "jane.smith@example.com", initials: "JS" },
@@ -64,6 +66,8 @@ const TicketDialog = ({ isOpen, onClose }: TicketDialogProps) => {
         return "bg-alarm-card text-alarm-accent border-alarm-accent/20";
       case "Done":
         return "bg-alarm-card text-alarm-warning border-alarm-warning/20";
+      case "Muted":
+        return "bg-alarm-card text-alarm-muted border-alarm-muted/20";
     }
   };
 

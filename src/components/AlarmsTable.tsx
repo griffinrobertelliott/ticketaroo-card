@@ -6,7 +6,7 @@ import { Clock, MoreHorizontal, ChevronUp, ChevronDown } from "lucide-react";
 interface Alarm {
   id: string;
   device: string;
-  status: "Unacknowledged" | "Acknowledged" | "In Progress" | "Resolved";
+  status: "Unacknowledged" | "Acknowledged" | "In Progress" | "Resolved" | "Muted";
   description: string;
   assignedTo: string | null;
   urgent: boolean;
@@ -113,7 +113,7 @@ const AlarmsTable = () => {
       case "all-active":
         return ["Unacknowledged", "Acknowledged"].includes(alarm.status);
       case "muted":
-        return alarm.status === "In Progress";
+        return alarm.status === "Muted";
       case "unacknowledged":
         return alarm.status === "Unacknowledged";
       case "acknowledged":
