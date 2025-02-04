@@ -1,22 +1,10 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody } from "@/components/ui/table";
 import { useState } from "react";
 import TicketDialog from "./TicketDialog";
-import { Clock, MoreHorizontal, ChevronUp, ChevronDown } from "lucide-react";
-
-interface Alarm {
-  id: string;
-  device: string;
-  status: "Unacknowledged" | "Acknowledged" | "In Progress" | "Resolved" | "Muted";
-  description: string;
-  assignedTo: string | null;
-  urgent: boolean;
-  timeElapsed: string;
-  severity: "Warning" | "Critical" | "Info";
-}
-
-type SortField = keyof Alarm;
-type SortDirection = "asc" | "desc";
-type StatusFilter = "all-active" | "muted" | "unacknowledged" | "acknowledged" | "resolved";
+import { Alarm, SortField, SortDirection, StatusFilter } from "@/types/alarm";
+import FilterPills from "./alarms/FilterPills";
+import AlarmsTableHeader from "./alarms/AlarmsTableHeader";
+import AlarmRow from "./alarms/AlarmRow";
 
 // Mock data - replace with real data later
 const mockAlarms: Alarm[] = [
@@ -75,15 +63,6 @@ const AlarmsTable = () => {
     }
   };
 
-  const getSortIcon = (field: SortField) => {
-    if (field !== sortField) return null;
-    return sortDirection === "asc" ? (
-      <ChevronUp className="w-4 h-4 ml-1" />
-    ) : (
-      <ChevronDown className="w-4 h-4 ml-1" />
-    );
-  };
-
   const getSeverityColor = (severity: Alarm["severity"]) => {
     switch (severity) {
       case "Warning":
@@ -105,6 +84,8 @@ const AlarmsTable = () => {
         return "text-blue-400";
       case "Resolved":
         return "text-green-400";
+      case "Muted":
+        return "text-alarm-muted";
     }
   };
 
@@ -135,124 +116,28 @@ const AlarmsTable = () => {
     return 0;
   });
 
-  const FilterPill = ({ label, value }: { label: string; value: StatusFilter }) => (
-    <button
-      onClick={() => setStatusFilter(value)}
-      className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-        statusFilter === value
-          ? "bg-alarm-accent text-alarm-background"
-          : "bg-alarm-card hover:bg-alarm-card/80 text-alarm-muted"
-      }`}
-    >
-      {label}
-    </button>
-  );
-
   return (
     <div className="w-full space-y-6">
-      <div className="flex gap-3 overflow-x-auto pb-2">
-        <FilterPill label="All Active" value="all-active" />
-        <FilterPill label="Muted" value="muted" />
-        <FilterPill label="Unacknowledged" value="unacknowledged" />
-        <FilterPill label="Acknowledged" value="acknowledged" />
-        <FilterPill label="Resolved" value="resolved" />
-      </div>
+      <FilterPills 
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+      />
 
       <Table>
-        <TableHeader>
-          <TableRow className="border-b border-alarm-card hover:bg-transparent">
-            <TableHead 
-              className="text-alarm-muted cursor-pointer"
-              onClick={() => handleSort("device")}
-            >
-              <div className="flex items-center">
-                Device {getSortIcon("device")}
-              </div>
-            </TableHead>
-            <TableHead 
-              className="text-alarm-muted cursor-pointer"
-              onClick={() => handleSort("status")}
-            >
-              <div className="flex items-center">
-                Status {getSortIcon("status")}
-              </div>
-            </TableHead>
-            <TableHead 
-              className="text-alarm-muted cursor-pointer"
-              onClick={() => handleSort("description")}
-            >
-              <div className="flex items-center">
-                Description {getSortIcon("description")}
-              </div>
-            </TableHead>
-            <TableHead className="text-alarm-muted">Assigned To</TableHead>
-            <TableHead className="text-alarm-muted">Urgent</TableHead>
-            <TableHead 
-              className="text-alarm-muted cursor-pointer"
-              onClick={() => handleSort("timeElapsed")}
-            >
-              <div className="flex items-center">
-                Time Elapsed {getSortIcon("timeElapsed")}
-              </div>
-            </TableHead>
-            <TableHead 
-              className="text-alarm-muted cursor-pointer"
-              onClick={() => handleSort("severity")}
-            >
-              <div className="flex items-center">
-                Severity {getSortIcon("severity")}
-              </div>
-            </TableHead>
-            <TableHead className="text-alarm-muted text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
+        <AlarmsTableHeader
+          sortField={sortField}
+          sortDirection={sortDirection}
+          handleSort={handleSort}
+        />
         <TableBody>
           {sortedAlarms.map((alarm) => (
-            <TableRow
+            <AlarmRow
               key={alarm.id}
-              onClick={() => handleRowClick(alarm.id)}
-              className="cursor-pointer border-b border-alarm-card hover:bg-alarm-card/50"
-            >
-              <TableCell className="font-medium text-foreground">
-                {alarm.device}
-              </TableCell>
-              <TableCell className={getStatusColor(alarm.status)}>
-                {alarm.status}
-              </TableCell>
-              <TableCell className="text-alarm-muted">
-                {alarm.description}
-              </TableCell>
-              <TableCell>
-                {alarm.assignedTo ? (
-                  <span className="text-alarm-muted">{alarm.assignedTo}</span>
-                ) : (
-                  <button className="px-2 py-1 text-sm text-alarm-accent hover:bg-alarm-card rounded">
-                    ASSIGN
-                  </button>
-                )}
-              </TableCell>
-              <TableCell>
-                {alarm.urgent && (
-                  <div className="w-6 h-6 rounded bg-alarm-urgent/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-alarm-urgent" />
-                  </div>
-                )}
-              </TableCell>
-              <TableCell className="text-alarm-muted">
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  {alarm.timeElapsed}
-                </div>
-              </TableCell>
-              <TableCell className={getSeverityColor(alarm.severity)}>
-                {alarm.severity}
-              </TableCell>
-              <TableCell className="text-right">
-                <button className="p-2 hover:bg-alarm-card rounded">
-                  <MoreHorizontal className="w-4 h-4 text-alarm-muted" />
-                </button>
-              </TableCell>
-            </TableRow>
+              alarm={alarm}
+              onClick={handleRowClick}
+              getSeverityColor={getSeverityColor}
+              getStatusColor={getStatusColor}
+            />
           ))}
         </TableBody>
       </Table>
