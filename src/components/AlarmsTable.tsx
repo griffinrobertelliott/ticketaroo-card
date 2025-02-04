@@ -56,10 +56,10 @@ export type Column = {
 const initialColumns: Column[] = [
   { id: 'device', label: 'Device', type: 'filterable' },
   { id: 'status', label: 'Status', type: 'filterable' },
-  { id: 'description', label: 'Description', type: 'sortable' },
+  { id: 'description', label: 'Description', type: 'none' },
   { id: 'assignedTo', label: 'Assigned To', type: 'filterable' },
   { id: 'urgent', label: 'Urgent', type: 'filterable' },
-  { id: 'timeElapsed', label: 'Time Elapsed', type: 'sortable' },
+  { id: 'timeElapsed', label: 'Time Elapsed', type: 'none' },
   { id: 'severity', label: 'Severity', type: 'filterable' },
 ];
 

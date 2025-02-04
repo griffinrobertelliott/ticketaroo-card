@@ -118,6 +118,7 @@ const AlarmsTableHeader = ({
     const baseClasses = "flex items-center px-2 py-1 rounded-full transition-colors";
     const activeClasses = "bg-primary text-primary-foreground hover:bg-primary/90";
     const inactiveClasses = "bg-secondary hover:bg-secondary/80";
+    const staticClasses = "text-alarm-muted";
 
     switch (column.type) {
       case 'filterable':
@@ -149,7 +150,7 @@ const AlarmsTableHeader = ({
         );
       default:
         return (
-          <div className={`${baseClasses} ${inactiveClasses}`}>
+          <div className={staticClasses}>
             {column.label}
           </div>
         );
