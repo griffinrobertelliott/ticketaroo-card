@@ -2,7 +2,7 @@ import AlarmsTable from "@/components/AlarmsTable";
 
 const Index = () => {
   return (
-    <div className="min-h-screen p-8 bg-alarm-background">
+    <div className="min-h-screen p-4 md:p-8 bg-alarm-background">
       <div className="max-w-[1400px] mx-auto">
         <AlarmsTable />
       </div>

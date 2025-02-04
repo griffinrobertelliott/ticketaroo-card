@@ -31,6 +31,7 @@ import {
 import DraggableHeader from './DraggableHeader';
 import { Column } from "../AlarmsTable";
 import { Dispatch, SetStateAction } from 'react';
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface AlarmsTableHeaderProps {
   columns: Column[];
@@ -69,6 +70,8 @@ const AlarmsTableHeader = ({
   setSeverityFilter,
   devices
 }: AlarmsTableHeaderProps) => {
+  const isMobile = useIsMobile();
+  
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -115,6 +118,10 @@ const AlarmsTableHeader = ({
   };
 
   const renderHeaderContent = (column: Column) => {
+    if (isMobile && !['device', 'timeElapsed'].includes(column.id)) {
+      return null;
+    }
+
     const baseClasses = "flex items-center px-3 py-2 rounded-full transition-all duration-200";
     const activeClasses = "bg-primary text-primary-foreground hover:bg-primary/90";
     const inactiveClasses = "bg-alarm-card hover:bg-alarm-card/90 text-foreground";
@@ -258,7 +265,9 @@ const AlarmsTableHeader = ({
               <DraggableHeader
                 key={column.id}
                 id={column.id}
-                className="first:pl-4 last:pr-4 py-4 text-foreground font-medium text-sm border-b-2 border-alarm-card/30"
+                className={`first:pl-4 last:pr-4 py-4 text-foreground font-medium text-sm border-b-2 border-alarm-card/30 ${
+                  isMobile && !['device', 'timeElapsed'].includes(column.id) ? 'hidden' : ''
+                }`}
               >
                 {renderHeaderContent(column)}
               </DraggableHeader>
