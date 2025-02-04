@@ -131,34 +131,34 @@ const AlarmsTableHeader = ({
   };
 
   const renderHeaderContent = (column: Column) => {
-    if (column.type === 'filterable' || column.type === 'both') {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger 
-            className={`flex items-center px-2 py-1 rounded-full transition-colors ${
-              isFilterActive(column.id)
-                ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                : "bg-secondary hover:bg-secondary/80"
-            }`}
-          >
-            {column.label}
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {renderFilterContent(column.id)}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+    switch (column.type) {
+      case 'filterable':
+      case 'both':
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger 
+              className={`flex items-center px-2 py-1 rounded-full transition-colors ${
+                isFilterActive(column.id)
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                  : "bg-secondary hover:bg-secondary/80"
+              }`}
+            >
+              {column.label}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {renderFilterContent(column.id)}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      case 'sortable':
+        return (
+          <div className="flex items-center cursor-pointer" onClick={() => handleSort(column.id as SortField)}>
+            {column.label} {getSortIcon(column.id as SortField)}
+          </div>
+        );
+      default:
+        return column.label;
     }
-    
-    if (column.type === 'sortable' || column.type === 'both') {
-      return (
-        <div className="flex items-center cursor-pointer" onClick={() => handleSort(column.id as SortField)}>
-          {column.label} {getSortIcon(column.id as SortField)}
-        </div>
-      );
-    }
-
-    return column.label;
   };
 
   const renderFilterContent = (columnId: string) => {
