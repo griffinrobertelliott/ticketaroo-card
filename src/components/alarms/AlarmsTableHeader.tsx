@@ -131,7 +131,7 @@ const AlarmsTableHeader = ({
   };
 
   const renderHeaderContent = (column: Column) => {
-    const columnType = column.type as ColumnType;
+    const columnType = column.type;
     
     if (columnType === 'filterable' || columnType === 'both') {
       return (
