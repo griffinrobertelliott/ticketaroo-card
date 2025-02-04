@@ -132,7 +132,7 @@ const TicketDialog = ({ isOpen, onClose }: TicketDialogProps) => {
                     <Select.Value>{status}</Select.Value>
                   </Select.Trigger>
                   <Select.Portal>
-                    <Select.Content className="bg-alarm-card rounded-md shadow-lg border border-alarm-muted/20">
+                    <Select.Content className="z-[100] relative bg-alarm-card rounded-md shadow-lg border border-alarm-muted/20">
                       <Select.Viewport className="p-1">
                         {statusOptions.map((option) => (
                           <Select.Item
@@ -175,7 +175,7 @@ const TicketDialog = ({ isOpen, onClose }: TicketDialogProps) => {
                     </div>
                   </Select.Trigger>
                   <Select.Portal>
-                    <Select.Content className="bg-alarm-card rounded-md shadow-lg border border-alarm-muted/20">
+                    <Select.Content className="z-[100] relative bg-alarm-card rounded-md shadow-lg border border-alarm-muted/20">
                       <Select.Viewport className="p-1">
                         {assigneeOptions.map((option) => (
                           <Select.Item
