@@ -7,7 +7,6 @@ interface Alarm {
   id: string;
   device: string;
   status: "Unacknowledged" | "Acknowledged" | "In Progress" | "Resolved";
-  notes: string;
   description: string;
   assignedTo: string | null;
   urgent: boolean;
@@ -21,7 +20,6 @@ const mockAlarms: Alarm[] = [
     id: "AL-001",
     device: "Spot-1",
     status: "Unacknowledged",
-    notes: "Maintenance required",
     description: "robot is stuck",
     assignedTo: null,
     urgent: true,
@@ -32,7 +30,6 @@ const mockAlarms: Alarm[] = [
     id: "AL-002",
     device: "Spot-2",
     status: "Acknowledged",
-    notes: "Under investigation",
     description: "battery low",
     assignedTo: "John Doe",
     urgent: false,
@@ -43,7 +40,6 @@ const mockAlarms: Alarm[] = [
     id: "AL-003",
     device: "Atlas-1",
     status: "Unacknowledged",
-    notes: "Critical issue",
     description: "connection lost",
     assignedTo: null,
     urgent: true,
@@ -94,7 +90,6 @@ const AlarmsTable = () => {
           <TableRow className="border-b border-alarm-card hover:bg-transparent">
             <TableHead className="text-alarm-muted">Device</TableHead>
             <TableHead className="text-alarm-muted">Status</TableHead>
-            <TableHead className="text-alarm-muted">Notes</TableHead>
             <TableHead className="text-alarm-muted">Description</TableHead>
             <TableHead className="text-alarm-muted">Assigned To</TableHead>
             <TableHead className="text-alarm-muted">Urgent</TableHead>
@@ -115,9 +110,6 @@ const AlarmsTable = () => {
               </TableCell>
               <TableCell className={getStatusColor(alarm.status)}>
                 {alarm.status}
-              </TableCell>
-              <TableCell className="text-alarm-muted">
-                {alarm.notes}
               </TableCell>
               <TableCell className="text-alarm-muted">
                 {alarm.description}
