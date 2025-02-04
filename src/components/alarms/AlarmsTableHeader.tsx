@@ -30,10 +30,11 @@ import {
 } from '@dnd-kit/sortable';
 import DraggableHeader from './DraggableHeader';
 import { Column } from "../AlarmsTable";
+import { Dispatch, SetStateAction } from 'react';
 
 interface AlarmsTableHeaderProps {
   columns: Column[];
-  setColumns: (columns: Column[]) => void;
+  setColumns: Dispatch<SetStateAction<Column[]>>;
   sortField: SortField;
   sortDirection: "asc" | "desc";
   handleSort: (field: SortField) => void;
@@ -105,10 +106,10 @@ const AlarmsTableHeader = ({
     const { active, over } = event;
 
     if (active.id !== over.id) {
-      setColumns((items: Column[]) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
+      setColumns((prevColumns) => {
+        const oldIndex = prevColumns.findIndex((item) => item.id === active.id);
+        const newIndex = prevColumns.findIndex((item) => item.id === over.id);
+        return arrayMove(prevColumns, oldIndex, newIndex);
       });
     }
   };
