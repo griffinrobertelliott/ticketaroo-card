@@ -1,5 +1,5 @@
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ChevronUp, ChevronDown, Filter } from "lucide-react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 import { 
   SortField, 
   StatusFilter, 
@@ -76,17 +76,14 @@ const AlarmsTableHeader = ({
     content: React.ReactNode;
   }) => (
     <TableHead className="text-alarm-muted">
-      <div className="flex items-center justify-between">
-        {children}
-        <DropdownMenu>
-          <DropdownMenuTrigger className="p-1 hover:bg-alarm-card rounded">
-            <Filter className="w-4 h-4" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {content}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger className="flex items-center px-2 py-1 rounded-full bg-alarm-card/50 hover:bg-alarm-card transition-colors">
+          {children}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          {content}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </TableHead>
   );
 
