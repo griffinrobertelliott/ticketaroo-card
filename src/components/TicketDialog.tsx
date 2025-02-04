@@ -210,7 +210,7 @@ const TicketDialog = ({ isOpen, onClose }: TicketDialogProps) => {
                       <Select.Value placeholder="Mute for..." />
                     </Select.Trigger>
                     <Select.Portal>
-                      <Select.Content className="bg-alarm-card rounded-md shadow-lg border border-alarm-muted/20">
+                      <Select.Content className="z-[100] relative bg-alarm-card rounded-md shadow-lg border border-alarm-muted/20">
                         <Select.Viewport className="p-1">
                           <Select.Item value="1" className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-alarm-muted/10 text-foreground">
                             <Select.ItemText>1 hour</Select.ItemText>
