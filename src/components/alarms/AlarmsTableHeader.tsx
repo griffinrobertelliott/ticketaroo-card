@@ -29,17 +29,11 @@ import {
   horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import DraggableHeader from './DraggableHeader';
-import { useState } from "react";
-
-type ColumnType = 'sortable' | 'filterable' | 'both' | 'none';
-
-interface Column {
-  id: string;
-  label: string;
-  type: ColumnType;
-}
+import { Column } from "../AlarmsTable";
 
 interface AlarmsTableHeaderProps {
+  columns: Column[];
+  setColumns: (columns: Column[]) => void;
   sortField: SortField;
   sortDirection: "asc" | "desc";
   handleSort: (field: SortField) => void;
@@ -57,6 +51,8 @@ interface AlarmsTableHeaderProps {
 }
 
 const AlarmsTableHeader = ({ 
+  columns,
+  setColumns,
   sortField, 
   sortDirection, 
   handleSort,
@@ -72,19 +68,6 @@ const AlarmsTableHeader = ({
   setSeverityFilter,
   devices
 }: AlarmsTableHeaderProps) => {
-  const initialColumns: Column[] = [
-    { id: 'device', label: 'Device', type: 'filterable' },
-    { id: 'status', label: 'Status', type: 'filterable' },
-    { id: 'description', label: 'Description', type: 'sortable' },
-    { id: 'assignedTo', label: 'Assigned To', type: 'filterable' },
-    { id: 'urgent', label: 'Urgent', type: 'filterable' },
-    { id: 'timeElapsed', label: 'Time Elapsed', type: 'sortable' },
-    { id: 'severity', label: 'Severity', type: 'filterable' },
-    { id: 'actions', label: 'Actions', type: 'none' },
-  ];
-
-  const [columns, setColumns] = useState<Column[]>(initialColumns);
-
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {

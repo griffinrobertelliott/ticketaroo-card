@@ -47,8 +47,26 @@ const initialAlarms: Alarm[] = [
   }
 ];
 
+export type Column = {
+  id: string;
+  label: string;
+  type: 'sortable' | 'filterable' | 'both' | 'none';
+};
+
+const initialColumns: Column[] = [
+  { id: 'device', label: 'Device', type: 'filterable' },
+  { id: 'status', label: 'Status', type: 'filterable' },
+  { id: 'description', label: 'Description', type: 'sortable' },
+  { id: 'assignedTo', label: 'Assigned To', type: 'filterable' },
+  { id: 'urgent', label: 'Urgent', type: 'filterable' },
+  { id: 'timeElapsed', label: 'Time Elapsed', type: 'sortable' },
+  { id: 'severity', label: 'Severity', type: 'filterable' },
+  { id: 'actions', label: 'Actions', type: 'none' },
+];
+
 const AlarmsTable = () => {
   const [alarms, setAlarms] = useState<Alarm[]>(initialAlarms);
+  const [columns, setColumns] = useState<Column[]>(initialColumns);
   const [selectedAlarmId, setSelectedAlarmId] = useState<string | null>(null);
   const [sortField, setSortField] = useState<SortField>("status");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
@@ -174,6 +192,8 @@ const AlarmsTable = () => {
     <div className="w-full space-y-6">
       <Table>
         <AlarmsTableHeader
+          columns={columns}
+          setColumns={setColumns}
           sortField={sortField}
           sortDirection={sortDirection}
           handleSort={handleSort}
@@ -194,6 +214,7 @@ const AlarmsTable = () => {
             <AlarmRow
               key={alarm.id}
               alarm={alarm}
+              columns={columns}
               onClick={handleRowClick}
               getSeverityColor={getSeverityColor}
               getStatusColor={getStatusColor}
